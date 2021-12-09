@@ -574,10 +574,12 @@ function __onEnable(__engine, __plugin, __script) {
       Canary.manager().disablePlugin(pluginName);
       Canary.manager().enablePlugin(pluginName);
     } else {
-      __plugin.pluginLoader.disablePlugin(__plugin);
+      _onDisable();
       org.bukkit.event.HandlerList['unregisterAll(org.bukkit.plugin.Plugin)'](__plugin);
       server.scheduler.cancelTasks(__plugin);
-      __plugin.pluginLoader.enablePlugin(__plugin);
+      __plugin.onEnable();
+      console.log("refreshed");
+      echo("ScriptCraft refreshed");
     }
   } // end _refresh()
   function _onDisable(/* evt */) {

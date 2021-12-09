@@ -10,6 +10,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ScriptCraftPlugin extends JavaPlugin
     {
         Thread currentThread = Thread.currentThread();
         ClassLoader previousClassLoader = currentThread.getContextClassLoader();
-        currentThread.setContextClassLoader(getClassLoader());
+        currentThread.setContextClassLoader(new ContextClassLoader());
         try {
             ScriptEngineManager factory = new ScriptEngineManager();
             this.engine = factory.getEngineByName("JavaScript");
@@ -89,5 +90,24 @@ public class ScriptCraftPlugin extends JavaPlugin
             return ((Boolean)jsResult).booleanValue();
         }
         return result;
+    }
+
+    /** Class loader to search system classes first, then plugin classes. */
+    protected class ContextClassLoader extends ClassLoader
+    {
+        public ContextClassLoader()
+        {
+            super(ClassLoader.getSystemClassLoader());
+        }
+
+        protected Class findClass(String name) throws ClassNotFoundException
+        {
+            return ScriptCraftPlugin.this.getClassLoader().loadClass(name);
+        }
+
+        protected URL findResource(String name)
+        {
+            return ScriptCraftPlugin.this.getClassLoader().getResource(name);
+        }
     }
 }
