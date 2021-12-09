@@ -346,7 +346,8 @@ function makeTypeIdAndDataSetter() {
     };
   } else {
     try {
-      var CraftEvil = Java.type(server.class.package.name + '.util.CraftEvil');
+      // https://github.com/walterhiggins/ScriptCraft/issues/447
+      var CraftEvil = Java.type(server.class.package.name + '.legacy.CraftEvil');
       console.log('Drone using CraftEvil.setTypeIdAndData method');
       return function(block, typeId, data, applyPhysics) {
         CraftEvil.setTypeIdAndData(block, typeId, data, applyPhysics);
@@ -386,7 +387,7 @@ function putBlock(x, y, z, blockId, metadata, world, update) {
     }
   }
   if (__plugin.bukkit) {
-    setTypeIdAndData(block, blockId, metadata, update);
+    setTypeIdAndData(block, blockId, metadata, !!update);
   }
   return block;
 }

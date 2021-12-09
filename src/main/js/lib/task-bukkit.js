@@ -2,9 +2,10 @@
 /*global __plugin, module, server*/
 function bukkitSetTimeout(callback, delayInMillis) {
   var delay = Math.ceil(delayInMillis / 50);
-  var task = server.scheduler[
-    'runTaskLater(org.bukkit.plugin.Plugin, java.lang.Runnable ,long)'
-  ](__plugin, callback, delay);
+  // https://github.com/walterhiggins/ScriptCraft/issues/396
+  var Run = Java.type('java.lang.Runnable');
+  var MyRun = Java.extend(Run, { run: callback });
+  var task = server.scheduler.runTaskLater(__plugin, new MyRun(), delay);
   return task;
 }
 function bukkitClearTimeout(task) {
@@ -12,9 +13,10 @@ function bukkitClearTimeout(task) {
 }
 function bukkitSetInterval(callback, intervalInMillis) {
   var delay = Math.ceil(intervalInMillis / 50);
-  var task = server.scheduler[
-    'runTaskTimer(org.bukkit.plugin.Plugin, java.lang.Runnable ,long, long)'
-  ](__plugin, callback, delay, delay);
+  // https://github.com/walterhiggins/ScriptCraft/issues/396
+  var Run = Java.type('java.lang.Runnable');
+  var MyRun = Java.extend(Run, { run: callback });
+  var task = server.scheduler.runTaskTimer(__plugin, new MyRun(), delay, delay);
   return task;
 }
 function bukkitClearInterval(bukkitTask) {

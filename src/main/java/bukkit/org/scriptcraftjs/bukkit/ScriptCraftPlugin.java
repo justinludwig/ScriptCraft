@@ -4,7 +4,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.script.Bindings;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.InputStreamReader;
@@ -27,11 +29,16 @@ public class ScriptCraftPlugin extends JavaPlugin
         ClassLoader previousClassLoader = currentThread.getContextClassLoader();
         currentThread.setContextClassLoader(getClassLoader());
         try {
-            ScriptEngineManager factory = new ScriptEngineManager(null);
+            ScriptEngineManager factory = new ScriptEngineManager();
             this.engine = factory.getEngineByName("JavaScript");
             if (this.engine == null) {
                 this.getLogger().severe(NO_JAVASCRIPT_MESSAGE);
             } else {
+                // https://docs.oracle.com/en/graalvm/enterprise/21/docs/reference-manual/js/ScriptEngine/
+                Bindings bindings = this.engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("polyglot.js.allowAllAccess", true);
+                bindings.put("polyglot.js.nashorn-compat", true);
+
                 Invocable inv = (Invocable) this.engine;
                 this.engine.eval(new InputStreamReader(this.getResource("boot.js")));
                 inv.invokeFunction("__scboot", this, engine);
