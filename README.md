@@ -1,3 +1,88 @@
+# ScriptCraft Fork
+
+Fork of https://github.com/walterhiggens/ScriptCraft with support for GraalVM 21.3.0 and SpigotMC 1.18.
+
+## Quick Start
+
+### Install GraalVM
+
+1. Download `graalvm-ce-java17-linux-amd64-21.3.0.tar.gz` (or archive appropriate for your platform) from https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.3.0
+2. Extract archive and move to a permanent directory (like `/usr/lib/jvm/graalvm`)
+
+### Build SpigotMC
+
+1. Download latest spigot BuildTools.jar from https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+2. Create a temporary build directory like `/tmp/spigotmc-build` and move BuildTools.jar into it
+3. From temporary build directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx1024M -jar BuildTools.jar --rev 1.18`
+4. Copy the built `spigot-1.18.jar` from the temporary build directory to a permanent directory (like `/srv/spigotmc`)
+
+### Install Ant
+
+1. Download latest version archive (eg `apache-ant-1.10.12-bin.tar.xz`) from https://ant.apache.org/bindownload.cgi
+2. Extract archive and move to a permanent directory (like `/usr/local/share/ant`)
+
+### Build ScriptCraft
+
+1. Clone development branch of this repo (`git clone https://github.com/justinludwig/ScriptCraft.git`) in a temporary directory (like `/tmp/scriptcraft-build`)
+2. From temporary build directory, run `JAVA_HOME=/usr/lib/jvm/graalvm ANT_HOME=/usr/local/share/ant /usr/local/share/ant/bin/ant`
+3. Copy the built `target/scriptcraft.jar` from the temporary build directory to the `plugins` subdirectory of your spigotmc directory (eg `/srv/spigotmc/plugins`)
+
+### Run SpigotMC
+
+1. Add an `ops.json` file with the following content in your spigotmc directory, but with your own Minecraft user name and UUID: `[{ "uuid": "3b0d9664-8808-48c9-8733-cb320679ee11", "name": "somecoolguy", "level": 4 }]` (you can find your UUID by replacing your username with `somecoolguy` in this URL: https://api.mojang.com/users/profiles/minecraft/somecoolguy)
+2. From your spigotmc directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx2024M -Dcom.mojang.eula.agree=true -jar spigot-1.18.jar --world-dir worlds`
+
+This will create a number of config files in your spigotmc directory (eg in `/srv/spigotmc`); and when spigotmc fully starts up, it will also create a `scriptcraft` subdirectory (eg `/srv/spigotmc/scriptcraft`) and a `worlds` subdirectory (eg `/srv/spigotmc/worlds`). The `worlds` subdirectory is where the saved Minecraft state lives; the `scriptcraft` subdirectory is where all the ScriptCraft code and data lives:
+
+1. Saved Script craft state in `/srv/spigotmc/scriptcraft/data`
+2. Core ScriptCraft JavaScript in `/srv/spigotmc/scriptcraft/lib`
+3. Default ScriptCraft modules in `/srv/spigotmc/scriptcraft/modules`
+4. Default ScriptCraft plugins and your custom plugins in `/srv/spigotmc/scriptcraft/plugins`
+
+### Connect Minecraft Client
+
+1. Run your usual Minecraft launcher
+2. Play the Minecraft Java Edition 1.18
+3. Select `Multiplayer` game
+4. Select `Direct Connection` (or set up a permanent server record via `Add Server`)
+5. Enter `127.0.0.1` as the `Server Address` if SpigotMC is running on the same computer as the Minecraft client, or the IP address of the server (eg `192.168.1.23`) from the perspective of the client if it's remote
+6. Click `Join Server`
+
+### Run Some JavaScript
+
+1. In the Minecraft client, type `/js self.world.time = 0` (and the enter key) to change the time of day to dawn; type `/js self.world.time = 12000` to change the time to dusk
+2. On the SpigotMC server, create a new file at `/srv/spigotmc/scriptcraft/plugins/me/my-first-plugin.js`, and add the javascript below to it
+3. In the Minecraft client, enter `/js refresh()` and then `/js arch()` -- an arch should appear!
+
+```
+// my-first-plugin.js
+const Blocks = require('blocks');
+const Drone = require('drone');
+
+exports.arch = function(width = 5, height = 5) {
+    let drone = new Drone(self)
+        .box(Blocks.granite, 1, height, 1)
+        .right(width)
+        .box(Blocks.granite, 1, height, 1)
+        .up(height)
+    ;
+    for (let i = width - 1; i > 0; i -= 2) {
+        drone = drone
+            .left(i)
+            .box(Blocks.granite, 1, 1, 1)
+            .right(i - 1)
+            .box(Blocks.granite, 1, 1, 1)
+            .up(1)
+        ;
+    }
+}
+```
+
+
+-----
+
+Original ScriptCraft README:
+
 # ScriptCraft - Modding Minecraft with Javascript
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/walterhiggins/ScriptCraft?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
