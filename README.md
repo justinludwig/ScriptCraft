@@ -1,20 +1,21 @@
 # ScriptCraft Fork
 
-Fork of https://github.com/walterhiggens/ScriptCraft with support for GraalVM 22.1.0 and SpigotMC 1.18.2.
+Fork of https://github.com/walterhiggens/ScriptCraft with support for GraalVM 22.3.0 and SpigotMC 1.19.2.
 
 ## Quick Start
 
 ### Install GraalVM
 
-1. Download `graalvm-ce-java17-linux-amd64-22.1.0.tar.gz` (or archive appropriate for your platform) from https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.1.0
+1. Download `graalvm-ce-java17-linux-amd64-22.3.0.tar.gz` (or archive appropriate for your platform) from https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-22.3.0
 2. Extract archive and move to a permanent directory (like `/usr/lib/jvm/graalvm`)
+3. Install JavaScript support (eg `/usr/lib/jvm/graalvm/bin/gu install js`)
 
 ### Build SpigotMC
 
 1. Download latest spigot BuildTools.jar from https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 2. Create a temporary build directory like `/tmp/spigotmc-build` and move BuildTools.jar into it
-3. From temporary build directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx1024M -jar BuildTools.jar --rev 1.18.2`
-4. Copy the built `spigot-1.18.2.jar` from the temporary build directory to a permanent directory (like `/srv/spigotmc`)
+3. From temporary build directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx1024M -jar BuildTools.jar --rev 1.19.2`
+4. Copy the built `spigot-1.19.2.jar` from the temporary build directory to a permanent directory (like `/srv/spigotmc`)
 
 ### Install Ant
 
@@ -30,7 +31,7 @@ Fork of https://github.com/walterhiggens/ScriptCraft with support for GraalVM 22
 ### Run SpigotMC
 
 1. Add an `ops.json` file with the following content in your spigotmc directory, but with your own Minecraft user name and UUID: `[{ "uuid": "3b0d9664-8808-48c9-8733-cb320679ee11", "name": "somecoolguy", "level": 4 }]` (you can find your UUID by replacing your username with `somecoolguy` in this URL: https://api.mojang.com/users/profiles/minecraft/somecoolguy)
-2. From your spigotmc directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx2024M -Dcom.mojang.eula.agree=true -jar spigot-1.18.2.jar --world-dir worlds`
+2. From your spigotmc directory, run `JAVA_HOME=/usr/lib/jvm/graalvm /usr/lib/jvm/graalvm/bin/java -Xmx2024M -Dcom.mojang.eula.agree=true -jar spigot-1.19.2.jar --world-dir worlds`
 
 This will create a number of config files in your spigotmc directory (eg in `/srv/spigotmc`); and when spigotmc fully starts up, it will also create a `scriptcraft` subdirectory (eg `/srv/spigotmc/scriptcraft`) and a `worlds` subdirectory (eg `/srv/spigotmc/worlds`). The `worlds` subdirectory is where the saved Minecraft state lives; the `scriptcraft` subdirectory is where all the ScriptCraft code and data lives:
 
@@ -42,7 +43,7 @@ This will create a number of config files in your spigotmc directory (eg in `/sr
 ### Connect Minecraft Client
 
 1. Run your usual Minecraft launcher
-2. Play the Minecraft Java Edition 1.18.2
+2. Play the Minecraft Java Edition 1.19.2
 3. Select `Multiplayer` game
 4. Select `Direct Connection` (or set up a permanent server record via `Add Server`)
 5. Enter `127.0.0.1` as the `Server Address` if SpigotMC is running on the same computer as the Minecraft client, or the IP address of the server (eg `192.168.1.23`) from the perspective of the client if it's remote
